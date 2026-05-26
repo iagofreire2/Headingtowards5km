@@ -1,6 +1,5 @@
 import pygame
 import sys
-# Adicionamos o VICTORY_STATE na importação abaixo:
 from code.const import WIN_WIDTH, WIN_HEIGHT, MENU_STATE, LEVEL_STATE, GAME_OVER_STATE, VICTORY_STATE
 from code.Menu import Menu
 from code.Level import Level
@@ -9,8 +8,15 @@ from code.Level import Level
 class Game:
     def __init__(self):
         pygame.init()
+        pygame.mixer.init()  # Garante que o sistema de áudio está ativo
+
         self.window = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
         pygame.display.set_caption("Rumo aos 5K")
+
+        # Inicia a trilha sonora de fundo em loop infinito (-1)
+        pygame.mixer.music.load("asset/trilha.wav")
+        pygame.mixer.music.set_volume(0.4)
+        pygame.mixer.music.play(-1)
 
         self.state = MENU_STATE
         self.menu = Menu(self.window)
@@ -28,13 +34,14 @@ class Game:
                     sys.exit()
 
                 if event.type == pygame.KEYDOWN:
+                    # Transição do Menu para o Gameplay
                     if self.state == MENU_STATE and event.key == pygame.K_RETURN:
                         self.state = LEVEL_STATE
 
-                    # Permite reiniciar o jogo com ENTER caso perca OU ganhe
+                    # Permite reiniciar o nível com ENTER caso perca ou ganhe
                     elif (
                             self.state == GAME_OVER_STATE or self.state == VICTORY_STATE) and event.key == pygame.K_RETURN:
-                        self.level = Level(self.window)
+                        self.level = Level(self.window)  # Reseta o nível
                         self.state = MENU_STATE
 
             # --- MÁQUINA DE ESTADOS ---
@@ -58,7 +65,6 @@ class Game:
                                  (WIN_WIDTH // 2 - texto_instrucao.get_width() // 2, WIN_HEIGHT // 2 + 30))
 
             elif self.state == VICTORY_STATE:
-                # Tela de Sucesso!
                 self.window.fill((0, 0, 0))
                 fonte_vic = pygame.font.SysFont(None, 60)
                 fonte_sub = pygame.font.SysFont(None, 30)
