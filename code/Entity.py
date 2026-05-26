@@ -1,11 +1,12 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
+import pygame
 
 class Entity:
-    def __init__(self):
-        self.name = None
-        self.surf = None
-        self.rect = None
+    def __init__(self, x, y, width, height, color):
+        self.image = pygame.Surface((width, height))
+        self.image.fill(color)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
 
-    def move(self, ):
-        pass
+    def draw(self, window):
+        window.blit(self.image, self.rect)
