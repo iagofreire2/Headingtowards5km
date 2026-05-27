@@ -21,10 +21,11 @@ class Player:
         self.som_pulo.set_volume(0.7)  # Volume de 0.0 a 1.0
 
     def pular(self):
+        # Só permite pular se estiver encostado no chão
         if not self.is_jumping:
-            self.velocidade_y = -16
+            # Reduzimos de -16 para -12 para um pulo mais baixo e rápido
+            self.velocidade_y = -12
             self.is_jumping = True
-            # 2. Toca o som no momento exato do pulo
             self.som_pulo.play()
 
     def update(self):
