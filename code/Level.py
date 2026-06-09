@@ -1,5 +1,5 @@
 import pygame
-import random  # <-- NOVA IMPORTAÇÃO para sortear os obstáculos
+import random
 from code.const import WIN_WIDTH, WIN_HEIGHT, LEVEL_STATE, GAME_OVER_STATE, VICTORY_STATE, TARGET_DISTANCE
 from code.Player import Player
 from code.Enemy import Enemy
@@ -7,6 +7,7 @@ from code.Background import Background
 
 
 class Level:
+    # Gerencia a lógica de um nível: jogador, obstáculos, física e dificuldade progressiva.
     def __init__(self, window):
         self.window = window
         self.bg = Background()
@@ -14,7 +15,7 @@ class Level:
         self.enemies = []
         self.spawn_timer = 0
 
-        # Define um tempo inicial de 90 frames para o primeiro obstáculo
+        # Tempo inicial antes do primeiro obstáculo (em frames)
         self.tempo_spawn = 90
 
         self.distance = 0
@@ -22,6 +23,8 @@ class Level:
         self.som_batida = pygame.mixer.Sound("asset/batida.wav")
 
     def run(self, eventos):
+        # Executa a lógica de um frame do nível.
+        # Retorna o novo estado (nível, game over ou vitória).
         self.bg.update()
         self.bg.draw(self.window)
 
@@ -40,28 +43,27 @@ class Level:
         if self.distance >= TARGET_DISTANCE:
             return VICTORY_STATE
 
-        # --- NOVA LÓGICA DE DIFICULDADE ---
-
-        # 1. PACE PROGRESSIVO: A cada 1000m, a velocidade aumenta em 1 ponto
+        # Dificuldade progressiva: a cada 1000m, os obstáculos ficam 1 ponto mais rápidos
         velocidade_atual = -7 - (self.distance // 1000)
 
         self.spawn_timer += 1
-        # Verifica se passou o tempo sorteado
         if self.spawn_timer > self.tempo_spawn:
-            # 2. Cria o inimigo injetando a velocidade dinâmica
+            # Cria um novo inimigo com velocidade dinâmica
             self.enemies.append(Enemy(velocidade_atual))
             self.spawn_timer = 0
 
-            # 3. SURGIMENTO IMPREVISÍVEL: Sorteia entre 50 e 100 frames para o próximo
+            # Próximo inimigo aparece em intervalo aleatório (imprevisibilidade)
             self.tempo_spawn = random.randint(50, 100)
 
         for enemy in self.enemies:
             enemy.update()
             enemy.draw(self.window)
 
+            # Remove inimigos que saíram da tela (otimização de memória)
             if enemy.rect.x < -50:
                 self.enemies.remove(enemy)
 
+            # Verifica colisão: o jogador chocou com um obstáculo?
             if self.player.rect.colliderect(enemy.rect):
                 self.som_batida.play()
                 return GAME_OVER_STATE
