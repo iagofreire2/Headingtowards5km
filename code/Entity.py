@@ -1,6 +1,7 @@
 import pygame
 
 class Entity:
+    # Classe base para entidades do jogo com posição, imagem e renderização.
     def __init__(self, x, y, width, height, color):
         self.image = pygame.Surface((width, height))
         self.image.fill(color)
@@ -9,4 +10,5 @@ class Entity:
         self.rect.y = y
 
     def draw(self, window):
+        # Renderiza a entidade na tela.
         window.blit(self.image, self.rect)

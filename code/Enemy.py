@@ -4,7 +4,8 @@ from code.const import WIN_WIDTH
 
 
 class Enemy(Entity):
-    # 1. Adicionamos o parâmetro de velocidade (padrão -7)
+    # Representa um obstáculo (buraco) que se move da direita para a esquerda.
+    # A velocidade é injetada pelo Level para criar dificuldade progressiva.
     def __init__(self, velocidade_x=-7):
         super().__init__(WIN_WIDTH, 550, 40, 40, (255, 50, 50))
 
@@ -15,8 +16,9 @@ class Enemy(Entity):
         self.rect.x = WIN_WIDTH
         self.rect.y = 550
 
-        # 2. Agora ele usa a velocidade ditada pelo Nível
+        # Velocidade dinâmica: aumenta conforme o jogador avança
         self.velocidade_x = velocidade_x
 
     def update(self):
+        # Move o obstáculo para a esquerda a cada frame.
         self.rect.x += self.velocidade_x

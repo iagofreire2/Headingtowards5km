@@ -6,7 +6,6 @@ WIN_HEIGHT = 600
 COLOR_WHITE = (255, 255, 255)
 COLOR_BLACK = (0, 0, 0)
 COLOR_BLUE = (50, 150, 255)
-# COLOR_GREEN = (0, 200, 100) # Removido para simplificar, se não for usar. Se usar, mantenha.
 COLOR_GREEN = (0, 200, 100)
 
 # Estados do Jogo

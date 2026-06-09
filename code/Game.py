@@ -6,18 +6,21 @@ from code.Level import Level
 
 
 class Game:
+    # Controlador principal do jogo com máquina de estados.
+    # Gerencia transições entre Menu, Gameplay, Game Over e Victory.
     def __init__(self):
         pygame.init()
-        pygame.mixer.init()  # Garante que o sistema de áudio está ativo
+        pygame.mixer.init()
 
         self.window = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
         pygame.display.set_caption("Rumo aos 5K")
 
-        # Inicia a trilha sonora de fundo em loop infinito (-1)
+        # Carrega e inicia a trilha sonora de fundo em loop infinito
         pygame.mixer.music.load("asset/trilha.wav")
         pygame.mixer.music.set_volume(0.4)
         pygame.mixer.music.play(-1)
 
+        # Estado inicial do jogo
         self.state = MENU_STATE
         self.menu = Menu(self.window)
         self.level = Level(self.window)
@@ -25,6 +28,7 @@ class Game:
         self.clock = pygame.time.Clock()
 
     def run(self):
+        # Loop principal do jogo com máquina de estados.
         while True:
             eventos = pygame.event.get()
 
@@ -34,14 +38,14 @@ class Game:
                     sys.exit()
 
                 if event.type == pygame.KEYDOWN:
-                    # Transição do Menu para o Gameplay
+                    # ENTER: inicia o jogo do Menu
                     if self.state == MENU_STATE and event.key == pygame.K_RETURN:
                         self.state = LEVEL_STATE
 
-                    # Permite reiniciar o nível com ENTER caso perca ou ganhe
+                    # ENTER: reinicia após Game Over ou Victory
                     elif (
                             self.state == GAME_OVER_STATE or self.state == VICTORY_STATE) and event.key == pygame.K_RETURN:
-                        self.level = Level(self.window)  # Reseta o nível
+                        self.level = Level(self.window)
                         self.state = MENU_STATE
 
             # --- MÁQUINA DE ESTADOS ---
@@ -49,6 +53,7 @@ class Game:
                 self.menu.run()
 
             elif self.state == LEVEL_STATE:
+                # O nível retorna o novo estado após cada frame
                 self.state = self.level.run(eventos)
 
             elif self.state == GAME_OVER_STATE:
